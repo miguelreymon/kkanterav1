@@ -1548,6 +1548,12 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                         val remaining = current.dribbleTimerRemainingSec - 1
                         if (remaining <= 0) {
                             dribbleCoolDownJob?.cancel()
+                            val reward = com.example.stats.HypeEngine.calculateReward(
+                                gameMode = "DRIBBLE_COMBO",
+                                rawScore = current.dribbleScore,
+                                hitsOrCombos = current.dribbleCrossovers,
+                                isNewRecord = current.dribbleScore > com.example.stats.PlayerStatsManager.stats.value.dribbleComboBest
+                            )
                             com.example.supabase.SupabaseSyncManager.recordMinigameScore(
                                 gameMode = "DRIBBLE_COMBO",
                                 score = current.dribbleScore,
@@ -1558,7 +1564,8 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                             current.copy(
                                 dribbleTimerRemainingSec = 0,
                                 isDribbleTimerRunning = false,
-                                isDribbleSessionFinished = true
+                                isDribbleSessionFinished = true,
+                                lastHypeReward = reward
                             )
                         } else {
                             current.copy(dribbleTimerRemainingSec = remaining)
@@ -1914,10 +1921,19 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                         if (remaining <= 0) {
                             finished = true
                             finalScore = current.reactionScore
+                            val comboCount = current.reactionHighlightMoments.count { it.isCombo }
+                            val isRecord = finalScore > com.example.stats.PlayerStatsManager.stats.value.reactionPointsBest
+                            val reward = com.example.stats.HypeEngine.calculateReward(
+                                gameMode = "REACTION_POINTS",
+                                rawScore = finalScore,
+                                hitsOrCombos = comboCount,
+                                isNewRecord = isRecord
+                            )
                             current.copy(
                                 reactionTimerRemainingSec = 0,
                                 isReactionTimerRunning = false,
                                 isReactionSessionFinished = true,
+                                lastHypeReward = reward,
                                 activeReactionPoints = emptyList(),
                                 activeReactionPoint = null
                             )
@@ -2404,7 +2420,14 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
         val newLives = (current.defendLives - 1).coerceAtLeast(0)
         val popup = DefendPopup(text = "💥 ¡ROBO! -1 ❤️", xNorm = if (threat.side == DefendSide.LEFT) 0.30f else 0.70f, yNorm = threat.targetY, isBonus = false)
         val isGameOver = newLives <= 0
+        var manualReward: com.example.stats.HypeRewardBreakdown? = null
         if (isGameOver) {
+            manualReward = com.example.stats.HypeEngine.calculateReward(
+                gameMode = "DEFEND_ZONE",
+                rawScore = current.defendScore,
+                hitsOrCombos = current.defendShieldCount,
+                isNewRecord = current.defendScore > com.example.stats.PlayerStatsManager.stats.value.defendZoneBest
+            )
             com.example.supabase.SupabaseSyncManager.recordMinigameScore(
                 gameMode = "DEFEND_ZONE",
                 score = current.defendScore,
@@ -2418,6 +2441,7 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                 defendLives = newLives,
                 isDefendGameOver = isGameOver,
                 isDefendTimerRunning = !isGameOver && it.isDefendTimerRunning,
+                lastHypeReward = manualReward ?: it.lastHypeReward,
                 defendThreats = it.defendThreats.filterNot { t -> t.id == threatId },
                 defendPopups = (it.defendPopups + popup).takeLast(6)
             )
@@ -2493,6 +2517,12 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                         val remaining = current.defendTimerRemainingSec - 1
                         if (remaining <= 0) {
                             defendGameLoopJob?.cancel()
+                            val reward = com.example.stats.HypeEngine.calculateReward(
+                                gameMode = "DEFEND_ZONE",
+                                rawScore = current.defendScore,
+                                hitsOrCombos = current.defendShieldCount,
+                                isNewRecord = current.defendScore > com.example.stats.PlayerStatsManager.stats.value.defendZoneBest
+                            )
                             com.example.supabase.SupabaseSyncManager.recordMinigameScore(
                                 gameMode = "DEFEND_ZONE",
                                 score = current.defendScore,
@@ -2504,6 +2534,7 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                                 defendTimerRemainingSec = 0,
                                 isDefendTimerRunning = false,
                                 isDefendSessionFinished = true,
+                                lastHypeReward = reward,
                                 defendThreats = emptyList()
                             )
                         } else {
@@ -2812,7 +2843,14 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
             val newShieldCount = state.defendShieldCount + bonusShields
             val newScore = state.defendScore + (bonusShields * 15)
             val isGameOver = newLives <= 0
+            var defendGameOverReward: com.example.stats.HypeRewardBreakdown? = null
             if (isGameOver) {
+                defendGameOverReward = com.example.stats.HypeEngine.calculateReward(
+                    gameMode = "DEFEND_ZONE",
+                    rawScore = newScore,
+                    hitsOrCombos = newShieldCount,
+                    isNewRecord = newScore > com.example.stats.PlayerStatsManager.stats.value.defendZoneBest
+                )
                 com.example.supabase.SupabaseSyncManager.recordMinigameScore(
                     gameMode = "DEFEND_ZONE",
                     score = newScore,
@@ -2831,6 +2869,7 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                     defendPopups = (it.defendPopups + newPopups).takeLast(6),
                     isDefendGameOver = isGameOver,
                     isDefendTimerRunning = !isGameOver && it.isDefendTimerRunning,
+                    lastHypeReward = defendGameOverReward ?: it.lastHypeReward,
                     defendScreenFlashRed = livesLost > 0
                 )
             }
@@ -3660,11 +3699,18 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                 val newSec = current.kidsBasketTimerRemainingSec - 1
                 VoiceCoachManager.onTimeRemaining(newSec)
                 if (newSec <= 0) {
+                    val reward = com.example.stats.HypeEngine.calculateReward(
+                        gameMode = "KIDS_MINI_BASKET",
+                        rawScore = current.kidsBasketScore,
+                        hitsOrCombos = current.kidsBasketMakes,
+                        isNewRecord = current.kidsBasketScore > com.example.stats.PlayerStatsManager.stats.value.kidsBasketBest
+                    )
                     _uiState.update {
                         it.copy(
                             kidsBasketTimerRemainingSec = 0,
                             isKidsTimerRunning = false,
-                            isKidsSessionFinished = true
+                            isKidsSessionFinished = true,
+                            lastHypeReward = reward
                         )
                     }
                     VoiceCoachManager.onKidsSessionFinished(current.kidsBasketScore, current.kidsBasketMakes)
@@ -4066,6 +4112,8 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                 var isVictory = false
                 val newPopups = current.speedTrapComicPopups.filter { now - it.timestamp < 1600L }.toMutableList()
 
+                var speedTrapReward: com.example.stats.HypeRewardBreakdown? = null
+
                 if (isFire) {
                     newHoldingSec += 0.10f
                     newGraceSec = 4.0f // Restablece gracia completa mientras sostenga el fuego
@@ -4080,9 +4128,16 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                                 colorHex = 0xFFFFD700
                             )
                         )
+                        val trapScore = (newPeak * 10).toInt()
+                        speedTrapReward = com.example.stats.HypeEngine.calculateReward(
+                            gameMode = "SPEED_TRAP_FIRE",
+                            rawScore = trapScore,
+                            hitsOrCombos = current.speedTrapDribbleCount / 10,
+                            isNewRecord = current.speedTrapPeakBpm >= 160f
+                        )
                         com.example.supabase.SupabaseSyncManager.recordMinigameScore(
                             gameMode = "SPEED_TRAP_FIRE",
-                            score = (newPeak * 10).toInt(),
+                            score = trapScore,
                             crossoversOrHits = current.speedTrapDribbleCount,
                             streak = (newHoldingSec * 10).toInt(),
                             stars = 3
@@ -4102,9 +4157,16 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                                 colorHex = 0xFFFF3B30
                             )
                         )
+                        val trapScore = (newPeak * 8).toInt()
+                        speedTrapReward = com.example.stats.HypeEngine.calculateReward(
+                            gameMode = "SPEED_TRAP_FIRE",
+                            rawScore = trapScore,
+                            hitsOrCombos = current.speedTrapDribbleCount / 10,
+                            isNewRecord = false
+                        )
                         com.example.supabase.SupabaseSyncManager.recordMinigameScore(
                             gameMode = "SPEED_TRAP_FIRE",
-                            score = (newPeak * 8).toInt(),
+                            score = trapScore,
                             crossoversOrHits = current.speedTrapDribbleCount,
                             streak = (newHoldingSec * 10).toInt(),
                             stars = if (newHoldingSec >= 10f) 2 else 1
@@ -4128,6 +4190,7 @@ class VisionViewModel(application: Application) : AndroidViewModel(application) 
                         speedTrapIsGameOver = isGameOver,
                         speedTrapIsVictory = isVictory,
                         speedTrapIsTimerRunning = !isGameOver && !isVictory && it.speedTrapIsTimerRunning,
+                        lastHypeReward = speedTrapReward ?: it.lastHypeReward,
                         speedTrapComicPopups = newPopups,
                         speedTrapSparks = sparks,
                         speedTrapSmokePuffs = smoke

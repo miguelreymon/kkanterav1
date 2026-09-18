@@ -96,6 +96,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import com.example.ui.common.UniversalGameFinishedDialog
 import com.example.theme.SportOrange
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -372,10 +373,21 @@ fun ReactionPointsHUD(
             )
         }
 
-        // 4. MODAL DE FINALIZACIÓN CUANDO TERMINAN LOS 60 SEGUNDOS (Con opciones de vídeo, highlights y compartir)
+        // 4. MODAL DE FINALIZACIÓN CUANDO TERMINAN LOS 60 SEGUNDOS (Con Hype justo y diseño para compartir vídeo)
         if (state.isReactionSessionFinished) {
-            ReactionFinishedDialog(
-                state = state,
+            val comboCount = state.reactionHighlightMoments.count { it.isCombo }
+            UniversalGameFinishedDialog(
+                gameTitle = "Ball & Touch (60s)",
+                score = state.reactionScore,
+                scoreLabel = "PUNTOS",
+                secondaryStatValue = "$comboCount",
+                secondaryStatLabel = "COMBOS x3",
+                hypeReward = state.lastHypeReward,
+                hasRecordedVideo = state.reactionRecordedVideoUri != null || state.lastRecordedVideoUri != null,
+                selectedVideoFormat = state.selectedVideoShareFormat,
+                recordingFormat = state.videoRecordingFormat,
+                isMusicEnabled = state.isReactionVideoMusicEnabled,
+                isGeneratingHighlight = state.isGeneratingHighlight,
                 onSelectVideoFormat = onSelectVideoFormat,
                 onSelectRecordingFormat = onSelectRecordingFormat,
                 onToggleMusic = onToggleMusic,

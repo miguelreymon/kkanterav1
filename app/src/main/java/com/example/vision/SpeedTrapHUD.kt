@@ -45,6 +45,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import com.example.ui.common.UniversalGameFinishedDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -549,73 +550,23 @@ fun SpeedTrapHUD(
             }
         }
 
-        // 6. Modal / Overlay de Victoria o Derrota (Game Over)
+        // 6. Modal de Finalización y Compartir Vídeo (Con Hype justo)
         if (state.speedTrapIsVictory || state.speedTrapIsGameOver) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xCC000000)),
-                contentAlignment = Alignment.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.88f)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(Color(0xFF181822))
-                        .border(
-                            3.dp,
-                            if (state.speedTrapIsVictory) Color(0xFFFFD700) else Color(0xFFFF3B30),
-                            RoundedCornerShape(24.dp)
-                        )
-                        .padding(24.dp)
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Text(
-                            text = if (state.speedTrapIsVictory) "🏆 ¡¡BOTE DE FUEGO LOGRADO!!" else "💀 ¡¡MOTOR CALADO!!",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Black,
-                            color = if (state.speedTrapIsVictory) Color(0xFFFFD700) else Color(0xFFFF3B30),
-                            textAlign = TextAlign.Center
-                        )
-
-                        Text(
-                            text = if (state.speedTrapIsVictory)
-                                "¡Has aguantado 20 segundos a máxima velocidad por encima del umbral! Récord: ${String.format("%.0f", state.speedTrapPeakBpm)} BPM."
-                            else
-                                "La velocidad de tus botes cayó por debajo de ${state.speedTrapTargetBpm.toInt()} BPM durante más de 4 segundos.",
-                            fontSize = 13.sp,
-                            color = Color(0xDDFFFFFF),
-                            textAlign = TextAlign.Center
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            Button(
-                                onClick = { onRestartSession() },
-                                modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEA580C)),
-                                shape = RoundedCornerShape(14.dp)
-                            ) {
-                                Text("REINTENTAR", fontWeight = FontWeight.Black, color = Color.White)
-                            }
-
-                            Button(
-                                onClick = { onExitToMain() },
-                                modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF262634)),
-                                shape = RoundedCornerShape(14.dp)
-                            ) {
-                                Text("MENÚ", fontWeight = FontWeight.Bold, color = Color.White)
-                            }
-                        }
-                    }
-                }
-            }
+            UniversalGameFinishedDialog(
+                gameTitle = "Speed Trap (Bote a Fuego)",
+                score = (state.speedTrapPeakBpm * 10).toInt(),
+                scoreLabel = "PUNTOS",
+                secondaryStatValue = "${state.speedTrapPeakBpm.toInt()}",
+                secondaryStatLabel = "PEAK BPM",
+                hypeReward = state.lastHypeReward,
+                hasRecordedVideo = state.reactionRecordedVideoUri != null || state.lastRecordedVideoUri != null,
+                selectedVideoFormat = state.selectedVideoShareFormat,
+                recordingFormat = state.videoRecordingFormat,
+                isMusicEnabled = state.isReactionVideoMusicEnabled,
+                isGeneratingHighlight = state.isGeneratingHighlight,
+                onRestart = { onRestartSession() },
+                onExit = { onExitToMain() }
+            )
         }
     }
 

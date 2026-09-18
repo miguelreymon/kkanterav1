@@ -58,6 +58,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import com.example.ui.common.UniversalGameFinishedDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -1005,66 +1006,24 @@ private fun KidsGameplayView(
         }
 
         // ==========================================
-        // PANTALLA DE FINAL DE SESIÓN
+        // PANTALLA DE FINAL DE SESIÓN (HYPE Y COMPARTIR VÍDEO)
         // ==========================================
         if (state.isKidsSessionFinished) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xEE000000)),
-                contentAlignment = Alignment.Center
-            ) {
-                Card(
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0D1B2A)),
-                    modifier = Modifier
-                        .fillMaxWidth(0.88f)
-                        .border(2.dp, Color(0xFFFF9800), RoundedCornerShape(24.dp))
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Text(
-                            text = "🎉 ¡¡PARTIDAZO!! 🎉",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color(0xFFFFD700)
-                        )
-
-                        Text(
-                            text = "Has conseguido ${state.kidsBasketScore} puntos y metido ${state.kidsBasketMakes} canastas.",
-                            color = Color.White,
-                            fontSize = 15.sp,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            Button(
-                                onClick = onRestartSession,
-                                modifier = Modifier.weight(1f).height(48.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800)),
-                                shape = RoundedCornerShape(14.dp)
-                            ) {
-                                Text("🔄 OTRA VEZ", fontWeight = FontWeight.Black, color = Color.White)
-                            }
-
-                            Button(
-                                onClick = onExit,
-                                modifier = Modifier.weight(1f).height(48.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF334155)),
-                                shape = RoundedCornerShape(14.dp)
-                            ) {
-                                Text("SALIR", fontWeight = FontWeight.Bold, color = Color.White)
-                            }
-                        }
-                    }
-                }
-            }
+            UniversalGameFinishedDialog(
+                gameTitle = "Kids Mini Basket (Canasta en Casa)",
+                score = state.kidsBasketScore,
+                scoreLabel = "PUNTOS",
+                secondaryStatValue = "${state.kidsBasketMakes}",
+                secondaryStatLabel = "CANASTAS",
+                hypeReward = state.lastHypeReward,
+                hasRecordedVideo = state.reactionRecordedVideoUri != null || state.lastRecordedVideoUri != null,
+                selectedVideoFormat = state.selectedVideoShareFormat,
+                recordingFormat = state.videoRecordingFormat,
+                isMusicEnabled = state.isReactionVideoMusicEnabled,
+                isGeneratingHighlight = state.isGeneratingHighlight,
+                onRestart = onRestartSession,
+                onExit = onExit
+            )
         }
     }
 }

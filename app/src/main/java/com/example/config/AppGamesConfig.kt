@@ -88,13 +88,13 @@ object AppGamesConfig {
 
     // =====================================================================================
     // 🕹️ 1. MODO GAME - TARJETAS DEL SLIDE DE INICIO (HOME)
+    // MVP: 4 Juegos Top Jugables + Próximamente / Bloqueados por Hype
     // =====================================================================================
-    // Cambia aquí el orden de las tarjetas arrastrando o moviendo las líneas en la lista:
     val gameModeHomeSlide: List<GameSlideItemConfig> = listOf(
-        // 1. SPEED TRAP (Radar de Velocidad BPM y Bote de Fuego)
+        // 1. SPEED TRAP (Radar de Velocidad BPM y Bote de Fuego) - MVP
         GameSlideItemConfig(
             id = "game_speed_trap",
-            title = "¡NUEVO! SPEED TRAP (BOTE DE FUEGO)",
+            title = "¡RITMO EXTREMO! SPEED TRAP",
             subtitle = "Tacómetro de carreras, radar BPM y aguante de 20s en llamas",
             drillName = "SPEED TRAP",
             duration = "20 SEG",
@@ -105,13 +105,13 @@ object AppGamesConfig {
             requiredHype = 0,
             levelNumber = 1
         ),
-        // 2. REACTION POINTS (Ball & Touch)
+        // 2. REACTION POINTS (Ball & Touch) - MVP
         GameSlideItemConfig(
             id = "game_reaction_touch",
             title = "NEXT UP: DRIBBLE RUSH",
             subtitle = "Toca los objetivos luminosos mientras mantienes el bote",
             drillName = "Ball & Touch",
-            duration = "2 MIN",
+            duration = "1 MIN",
             difficulty = "BEGINNER",
             image = SlideImage.POINT,
             gameTarget = GameTarget.REACTION_BALL_TOUCH,
@@ -119,21 +119,7 @@ object AppGamesConfig {
             requiredHype = 0,
             levelNumber = 2
         ),
-        // 2. REACTION POINTS (Cross Touch)
-        GameSlideItemConfig(
-            id = "game_reaction_cross",
-            title = "NEXT UP: DRIBBLE RUSH",
-            subtitle = "Toca los objetivos luminosos mientras mantienes el bote",
-            drillName = "Cross Touch",
-            duration = "2 MIN",
-            difficulty = "BEGINNER",
-            image = SlideImage.POINT2,
-            gameTarget = GameTarget.REACTION_CROSS_TOUCH,
-            isLocked = false,
-            requiredHype = 0,
-            levelNumber = 2
-        ),
-        // 3. DEFEND THE ZONE
+        // 3. DEFEND THE ZONE - MVP
         GameSlideItemConfig(
             id = "game_defend_zone",
             title = "¡NUEVO! DEFEND THE ZONE",
@@ -147,38 +133,10 @@ object AppGamesConfig {
             requiredHype = 0,
             levelNumber = 3
         ),
-        // 4. LASER ZONE
-        GameSlideItemConfig(
-            id = "game_laser_zone",
-            title = "¡NUEVO! DEFEND THE ZONE",
-            subtitle = "Esquiva los defensores fantasma y protege tu bote (3 vidas)",
-            drillName = "LASER ZONE",
-            duration = "1 MIN",
-            difficulty = "PRO",
-            image = SlideImage.LASER,
-            gameTarget = GameTarget.LASER_ZONE,
-            isLocked = false,
-            requiredHype = 0,
-            levelNumber = 4
-        ),
-        // 5. SHOOTING
-        GameSlideItemConfig(
-            id = "game_shooting",
-            title = "NEXT UP: SHOOTING FORM",
-            subtitle = "Perfecciona tu mecánica, arco y aciertos",
-            drillName = "SHOOTING",
-            duration = "3 MIN",
-            difficulty = "BEGINNER",
-            image = SlideImage.TIRO,
-            gameTarget = GameTarget.SHOOTING,
-            isLocked = false,
-            requiredHype = 0,
-            levelNumber = 5
-        ),
-        // 6. KIDS MINI BASKET
+        // 4. KIDS MINI BASKET (Canasta en Casa) - MVP
         GameSlideItemConfig(
             id = "game_kids_mini",
-            title = "¡NUEVO! KIDS MINI BASKET",
+            title = "¡EN CASA! KIDS MINI BASKET",
             subtitle = "Tiro infantil en casa con calibración de aro y pelota por foto",
             drillName = "MINI BASKET",
             duration = "1 MIN",
@@ -187,72 +145,72 @@ object AppGamesConfig {
             gameTarget = GameTarget.KIDS_MINI_BASKET,
             isLocked = false,
             requiredHype = 0,
-            levelNumber = 6
+            levelNumber = 4
         ),
-        // 7. DRIBBLING
+        // 5. BLOQUEADO: CROSS TOUCH (Desbloqueable con 250 Hype)
         GameSlideItemConfig(
-            id = "game_dribbling",
-            title = "NEXT UP: DRIBBLING COMBO",
-            subtitle = "Entrena tu control y precisión de bote",
-            drillName = "DRIBBLING",
+            id = "game_reaction_cross",
+            title = "CROSSOVER REACTION",
+            subtitle = "Desbloquea con 250 Hype o Nivel 2",
+            drillName = "Cross Touch",
             duration = "2 MIN",
-            difficulty = "BEGINNER",
-            image = SlideImage.DRIBBLING,
-            gameTarget = GameTarget.DRIBBLING,
-            isLocked = false,
-            requiredHype = 0,
-            levelNumber = 7
+            difficulty = "NIVEL 2",
+            image = SlideImage.POINT2,
+            gameTarget = GameTarget.REACTION_CROSS_TOUCH,
+            isLocked = true,
+            requiredHype = 250,
+            levelNumber = 5
         ),
-        // 8. EJEMPLO BLOQUEADO: CROSSOVER TARGETS (Requiere 500 Hype)
+        // 6. BLOQUEADO: LASER ZONE (Desbloqueable con 500 Hype)
         GameSlideItemConfig(
-            id = "game_crossover_locked",
-            title = "CROSSOVER TARGETS",
-            subtitle = "Sube de nivel para desbloquear este entrenamiento",
-            drillName = "CROSSOVER",
-            duration = "2 MIN",
-            difficulty = "LEVEL 2",
-            image = SlideImage.MANITA,
-            gameTarget = GameTarget.NONE,
+            id = "game_laser_zone",
+            title = "LASER ZONE DEFENSE",
+            subtitle = "Desbloquea con 500 Hype o Nivel 3",
+            drillName = "LASER ZONE",
+            duration = "1 MIN",
+            difficulty = "NIVEL 3",
+            image = SlideImage.LASER,
+            gameTarget = GameTarget.LASER_ZONE,
             isLocked = true,
             requiredHype = 500,
-            levelNumber = 8
+            levelNumber = 6
         ),
-        // 9. EJEMPLO BLOQUEADO: STEP-BACK SHOOTING (Requiere 750 Hype)
+        // 7. BLOQUEADO: DRIBBLING COMBO MASTER
+        GameSlideItemConfig(
+            id = "game_dribbling",
+            title = "DRIBBLE COMBO MASTER",
+            subtitle = "Desbloquea con 750 Hype o Nivel 4",
+            drillName = "DRIBBLING",
+            duration = "2 MIN",
+            difficulty = "NIVEL 4",
+            image = SlideImage.DRIBBLING,
+            gameTarget = GameTarget.DRIBBLING,
+            isLocked = true,
+            requiredHype = 750,
+            levelNumber = 7
+        ),
+        // 8. BLOQUEADO: STEP-BACK SHOOTING
         GameSlideItemConfig(
             id = "game_stepback_locked",
             title = "STEP-BACK SHOOTING",
-            subtitle = "Sube de nivel para desbloquear este entrenamiento",
+            subtitle = "Desbloquea con 1000 Hype o Nivel 5",
             drillName = "STEP-BACK",
             duration = "3 MIN",
-            difficulty = "LEVEL 3",
+            difficulty = "ALL-STAR",
             image = SlideImage.ONBOARDING,
             gameTarget = GameTarget.NONE,
             isLocked = true,
-            requiredHype = 750,
-            levelNumber = 9
-        ),
-        // 10. EJEMPLO BLOQUEADO: PRO AGILITY & ATTACK (Requiere 1000 Hype)
-        GameSlideItemConfig(
-            id = "game_agility_locked",
-            title = "PRO AGILITY & ATTACK",
-            subtitle = "Sube de nivel para desbloquear este entrenamiento",
-            drillName = "AGILITY PRO",
-            duration = "4 MIN",
-            difficulty = "ALL-STAR",
-            image = SlideImage.AVATAR,
-            gameTarget = GameTarget.NONE,
-            isLocked = true,
             requiredHype = 1000,
-            levelNumber = 10
+            levelNumber = 8
         )
     )
 
     // =====================================================================================
     // 🏀 2. MODO PRO - TARJETAS DEL SLIDE DE INICIO (HOME)
+    // MVP: 4 Entrenamientos Técnicos Top + Bloqueados por Hype / Próximamente
     // =====================================================================================
-    // En Modo PRO puedes tener un orden diferente, tarjetas exclusivas o todas desbloqueadas:
     val proModeHomeSlide: List<GameSlideItemConfig> = listOf(
-        // 1. SPEED TRAP PRO (Cadencia máxima y velocidad de bote)
+        // 1. SPEED TRAP PRO (Cadencia máxima y velocidad de bote) - MVP
         GameSlideItemConfig(
             id = "pro_speed_trap",
             title = "SPEED TRAP (CADENCE BPM)",
@@ -266,7 +224,7 @@ object AppGamesConfig {
             requiredHype = 0,
             levelNumber = 1
         ),
-        // 2. SHOOTING (Análisis de tiro profesional en Modo PRO)
+        // 2. SHOOTING LAB (Análisis de tiro profesional en Modo PRO) - MVP
         GameSlideItemConfig(
             id = "pro_shooting",
             title = "PRO SHOOTING LAB",
@@ -280,13 +238,13 @@ object AppGamesConfig {
             requiredHype = 0,
             levelNumber = 2
         ),
-        // 3. DEFEND ZONE
+        // 3. DEFEND ZONE - MVP
         GameSlideItemConfig(
             id = "pro_defend_zone",
             title = "DEFENSIVE REACTION & FOOTWORK",
             subtitle = "Defensa de zona de alto impacto con tracking corporal en tiempo real",
             drillName = "DEFEND ZONE",
-            duration = "3 MIN",
+            duration = "1 MIN",
             difficulty = "ELITE",
             image = SlideImage.MANO,
             gameTarget = GameTarget.DEFEND_ZONE,
@@ -294,13 +252,13 @@ object AppGamesConfig {
             requiredHype = 0,
             levelNumber = 3
         ),
-        // 4. DRIBBLING COMBO PRO
+        // 4. DRIBBLING COMBO PRO - MVP
         GameSlideItemConfig(
             id = "pro_dribbling",
             title = "BALL HANDLING & CADENCE",
             subtitle = "Control de bote a doble ritmo y aceleración explosiva",
             drillName = "DRIBBLING PRO",
-            duration = "4 MIN",
+            duration = "45 SEG",
             difficulty = "PRO",
             image = SlideImage.DRIBBLING,
             gameTarget = GameTarget.DRIBBLING,
@@ -308,32 +266,32 @@ object AppGamesConfig {
             requiredHype = 0,
             levelNumber = 4
         ),
-        // 5. REACTION POINTS (Ball & Touch)
+        // 5. BLOQUEADO PRO: REACTION POINTS (Ball & Touch)
         GameSlideItemConfig(
             id = "pro_reaction_point",
             title = "PERIPHERAL VISION DRILL",
-            subtitle = "Entrenamiento de visión periférica y velocidad de respuesta",
+            subtitle = "Desbloquea con 300 Hype o Nivel PRO 2",
             drillName = "Ball & Touch",
             duration = "2 MIN",
-            difficulty = "PRO",
+            difficulty = "PRO 2",
             image = SlideImage.POINT,
             gameTarget = GameTarget.REACTION_BALL_TOUCH,
-            isLocked = false,
-            requiredHype = 0,
+            isLocked = true,
+            requiredHype = 300,
             levelNumber = 5
         ),
-        // 6. LASER ZONE
+        // 6. BLOQUEADO PRO: LASER ZONE
         GameSlideItemConfig(
             id = "pro_laser_zone",
             title = "AGILITY LASER GRID",
-            subtitle = "Coordinación lateral y cambios de dirección rápidos",
+            subtitle = "Desbloquea con 600 Hype o Nivel PRO 3",
             drillName = "LASER ZONE",
             duration = "3 MIN",
             difficulty = "ELITE",
             image = SlideImage.LASER,
             gameTarget = GameTarget.LASER_ZONE,
-            isLocked = false,
-            requiredHype = 0,
+            isLocked = true,
+            requiredHype = 600,
             levelNumber = 6
         )
     )

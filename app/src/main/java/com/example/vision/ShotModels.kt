@@ -432,6 +432,7 @@ data class VisionState(
     val generatedHighlightUri: android.net.Uri? = null,
     val isReactionVideoMusicEnabled: Boolean = true,
     val selectedVideoShareFormat: ReactionVideoShareFormat = ReactionVideoShareFormat.HIGHLIGHTS,
+    val lastHypeReward: com.example.stats.HypeRewardBreakdown? = null,
     val isDefendZoneMode: Boolean = false,
     val defendThreatType: DefendThreatType = DefendThreatType.HANDS,
     val defendLives: Int = 3,

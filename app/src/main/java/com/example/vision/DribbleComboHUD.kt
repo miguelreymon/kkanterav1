@@ -46,6 +46,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import com.example.ui.common.UniversalGameFinishedDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -239,12 +240,20 @@ fun DribbleComboHUD(
             }
         }
 
-        // 6. MODAL DE FINALIZACIÓN CUANDO TERMINA LA SESIÓN (45 segundos)
+        // 6. MODAL DE FINALIZACIÓN CUANDO TERMINA LA SESIÓN (Con Hype justo y diseño para compartir vídeo)
         if (state.isDribbleSessionFinished) {
-            DribbleFinishedDialog(
+            UniversalGameFinishedDialog(
+                gameTitle = "Dribble Crossover (Nivel ${state.dribbleLevel})",
                 score = state.dribbleScore,
-                crossovers = state.dribbleCrossovers,
-                level = state.dribbleLevel,
+                scoreLabel = "PUNTOS",
+                secondaryStatValue = "${state.dribbleCrossovers}",
+                secondaryStatLabel = "CROSSOVERS",
+                hypeReward = state.lastHypeReward,
+                hasRecordedVideo = state.reactionRecordedVideoUri != null || state.lastRecordedVideoUri != null,
+                selectedVideoFormat = state.selectedVideoShareFormat,
+                recordingFormat = state.videoRecordingFormat,
+                isMusicEnabled = state.isReactionVideoMusicEnabled,
+                isGeneratingHighlight = state.isGeneratingHighlight,
                 onRestart = onRestartDrill,
                 onExit = onExitToMain
             )

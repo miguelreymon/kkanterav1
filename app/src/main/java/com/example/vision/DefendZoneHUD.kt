@@ -51,6 +51,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import com.example.ui.common.UniversalGameFinishedDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -351,20 +352,23 @@ fun DefendZoneHUD(
         }
 
         // =====================================================================
-        // 6. DIÁLOGO GAME OVER (0 VIDAS) O VICTORIA (TIEMPO COMPLETADO)
+        // 6. DIÁLOGO GAME OVER O FINALIZACIÓN (Con Hype justo y diseño para compartir vídeo)
         // =====================================================================
         if (state.isDefendGameOver || state.isDefendSessionFinished) {
-            DefendEndGameDialog(
-                isGameOver = state.isDefendGameOver,
+            UniversalGameFinishedDialog(
+                gameTitle = if (state.defendThreatType == DefendThreatType.LASERS) "Defend The Zone (Láser)" else "Defend The Zone (Manos)",
                 score = state.defendScore,
-                shieldCount = state.defendShieldCount,
-                threatType = state.defendThreatType,
+                scoreLabel = "PUNTOS",
+                secondaryStatValue = "${state.defendShieldCount}",
+                secondaryStatLabel = "ESCUDOS",
+                hypeReward = state.lastHypeReward,
+                hasRecordedVideo = state.reactionRecordedVideoUri != null || state.lastRecordedVideoUri != null,
+                selectedVideoFormat = state.selectedVideoShareFormat,
+                recordingFormat = state.videoRecordingFormat,
+                isMusicEnabled = state.isReactionVideoMusicEnabled,
+                isGeneratingHighlight = state.isGeneratingHighlight,
                 onRestart = onRestartDrill,
-                onExit = onExitToMain,
-                onToggleThreatType = {
-                    val nextType = if (state.defendThreatType == DefendThreatType.HANDS) DefendThreatType.LASERS else DefendThreatType.HANDS
-                    onSelectThreatType(nextType)
-                }
+                onExit = onExitToMain
             )
         }
     }
