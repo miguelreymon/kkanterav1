@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Kantera</string>
+    <string name="permission_title">PERMISO DE CÁMARA</string>
+    <string name="permission_body">Kantera necesita acceso a la cámara para detectar la pelota, analizar tus lanzamientos y hacer seguimiento de tus entrenamientos en tiempo real.</string>
+    <string name="permission_denied">El permiso de cámara fue denegado. Por favor, habilítalo en los ajustes del sistema.</string>
+    <string name="btn_open_settings">ABRIR AJUSTES</string>
+    <string name="btn_try_again">REINTENTAR</string>
+    <string name="btn_enable_camera">HABILITAR CÁMARA</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <cache-path name="shared_videos" path="." />
+    <external-cache-path name="ext_shared_videos" path="." />
+    <files-path name="app_files" path="." />
+</paths>
